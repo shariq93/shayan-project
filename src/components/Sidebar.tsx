@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface SidebarProps {
   className?: string;
@@ -8,15 +9,22 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/af3d259d4daec789ed14862c4d4eeabc5bb17f28?placeholderIfAbsent=true", label: "Leads", active: true },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0ee644caaafd5ea1799ada8e3afc0ec73ae24bcb?placeholderIfAbsent=true", label: "Pre-Setting", active: false },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/deaec98764b663b8a774553f08c304d328680b85?placeholderIfAbsent=true", label: "Aktivität", active: false },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/9f58e7a913a04dd4b54750b6eb3fbbb7a683f4ee?placeholderIfAbsent=true", label: "Setting", active: false },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0d771b4bad6dd3ebfbec9c4cd485a603cc02bfd6?placeholderIfAbsent=true", label: "Closing", active: false },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/bb3dca346f05e54307c95563bca180a82f682809?placeholderIfAbsent=true", label: "Umsatz", active: false },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/af3d259d4daec789ed14862c4d4eeabc5bb17f28?placeholderIfAbsent=true", label: "Leads", path: "/" },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0ee644caaafd5ea1799ada8e3afc0ec73ae24bcb?placeholderIfAbsent=true", label: "Pre-Setting", path: "/pre-setting" },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/deaec98764b663b8a774553f08c304d328680b85?placeholderIfAbsent=true", label: "Aktivität", path: "/aktivitat" },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/9f58e7a913a04dd4b54750b6eb3fbbb7a683f4ee?placeholderIfAbsent=true", label: "Setting", path: "/setting" },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0d771b4bad6dd3ebfbec9c4cd485a603cc02bfd6?placeholderIfAbsent=true", label: "Closing", path: "/closing" },
+    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/bb3dca346f05e54307c95563bca180a82f682809?placeholderIfAbsent=true", label: "Umsatz", path: "/umsatz" },
   ];
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <>
@@ -32,8 +40,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
             {menuItems.map((item, index) => (
               <div
                 key={index}
+                onClick={() => handleNavigation(item.path)}
                 className={`flex w-full items-center gap-2 mt-2 p-2.5 rounded-[10px] cursor-pointer transition-colors ${
-                  item.active
+                  location.pathname === item.path
                     ? 'bg-[rgba(230,243,255,0.14)] text-white'
                     : 'text-[rgba(139,139,139,1)] hover:bg-[rgba(255,255,255,0.05)]'
                 }`}
@@ -74,8 +83,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
                 {menuItems.map((item, index) => (
                   <div
                     key={index}
+                    onClick={() => handleNavigation(item.path)}
                     className={`flex w-full items-center gap-3 p-3 rounded-[10px] cursor-pointer transition-colors ${
-                      item.active
+                      location.pathname === item.path
                         ? 'bg-[rgba(230,243,255,0.14)] text-white'
                         : 'text-[rgba(139,139,139,1)] hover:bg-[rgba(255,255,255,0.05)]'
                     }`}
@@ -98,4 +108,3 @@ export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
     </>
   );
 };
-
