@@ -1,110 +1,161 @@
-
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import { Link } from "react-router-dom";
 
 interface SidebarProps {
   className?: string;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+const SidebarContent = () => {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState('dashboard');
 
   const menuItems = [
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/af3d259d4daec789ed14862c4d4eeabc5bb17f28?placeholderIfAbsent=true", label: "Leads", path: "/" },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0ee644caaafd5ea1799ada8e3afc0ec73ae24bcb?placeholderIfAbsent=true", label: "Pre-Setting", path: "/pre-setting" },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/deaec98764b663b8a774553f08c304d328680b85?placeholderIfAbsent=true", label: "Aktivität", path: "/aktivitat" },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/9f58e7a913a04dd4b54750b6eb3fbbb7a683f4ee?placeholderIfAbsent=true", label: "Setting", path: "/setting" },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/0d771b4bad6dd3ebfbec9c4cd485a603cc02bfd6?placeholderIfAbsent=true", label: "Closing", path: "/closing" },
-    { icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/bb3dca346f05e54307c95563bca180a82f682809?placeholderIfAbsent=true", label: "Umsatz", path: "/umsatz" },
+    { id: 'dashboard', icon: '📊', label: 'Dashboard', path: '/' },
+    { id: 'leads', icon: '👥', label: 'Leads', path: '/' },
+    { id: 'aktivitat', icon: '📈', label: 'Aktivität', path: '/aktivitat' },
+    { id: 'setting', icon: '⚙️', label: 'Setting', path: '/' },
+    { id: 'pre-setting', icon: '🔧', label: 'Pre-Setting', path: '/pre-setting' },
+    { id: 'closing', icon: '✅', label: 'Closing', path: '/' },
+    { id: 'umsatz', icon: '💰', label: 'Umsatz', path: '/' },
   ];
 
-  const handleNavigation = (path: string) => {
-    navigate(path);
-    setIsMobileMenuOpen(false);
-  };
+  return (
+    <div className="flex flex-col h-full">
+      <div className="px-4 py-6">
+        <Link to="/" className="flex items-center">
+          <Avatar className="mr-2 w-8 h-8">
+            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <span className="text-lg font-semibold text-white">Acmee Corp</span>
+        </Link>
+      </div>
+      <div className="flex-grow p-4">
+        <nav className="grid gap-6">
+          {menuItems.map((item) => (
+            <Link
+              key={item.id}
+              to={item.path}
+              className={cn(
+                "flex items-center text-sm font-medium text-gray-50 hover:text-gray-100 transition-colors",
+                activeMenu === item.id && "text-gray-100"
+              )}
+              onClick={() => setActiveMenu(item.id)}
+            >
+              <span className="mr-2 text-lg">{item.icon}</span>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+      <div className="p-4">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              <div className="flex items-center text-sm font-medium text-gray-50 hover:text-gray-100 transition-colors">
+                <span className="mr-2 text-lg">🧑‍💼</span>
+                Account
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="w-full justify-start text-sm">
+                    <Avatar className="mr-2 w-6 h-6">
+                      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                    User Name
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuItem>Support</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    </div>
+  );
+};
+
+export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
     <>
-      {/* Desktop Sidebar */}
-      <nav className={`hidden lg:block w-64 ${className}`}>
-        <div className="text-sm text-[rgba(139,139,139,1)] font-normal whitespace-nowrap leading-none pt-[29px] pb-[656px] px-[30px] border-black border-r h-full">
-          <img
-            src="https://cdn.builder.io/api/v1/image/assets/TEMP/73d4596dfe606673994f99db4bdb6d8410552717?placeholderIfAbsent=true"
-            alt="User Avatar"
-            className="aspect-[2.28] object-contain w-[73px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[80px]"
-          />
-          <div className="w-full max-w-[170px] mt-[51px]">
-            {menuItems.map((item, index) => (
-              <div
-                key={index}
-                onClick={() => handleNavigation(item.path)}
-                className={`flex w-full items-center gap-2 mt-2 p-2.5 rounded-[10px] cursor-pointer transition-colors ${
-                  location.pathname === item.path
-                    ? 'bg-[rgba(230,243,255,0.14)] text-white'
-                    : 'text-[rgba(139,139,139,1)] hover:bg-[rgba(255,255,255,0.05)]'
-                }`}
-              >
-                <img
-                  src={item.icon}
-                  alt={item.label}
-                  className="aspect-[1] object-contain w-4 shrink-0"
-                />
-                <div className="truncate">
-                  {item.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Sidebar Overlay */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black bg-opacity-50">
-          <nav className="fixed left-0 top-0 h-full w-64 bg-black border-r border-[rgba(21,21,21,1)]">
-            <div className="text-sm text-[rgba(139,139,139,1)] font-normal leading-none p-5">
-              <div className="flex justify-between items-center mb-6">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets/TEMP/73d4596dfe606673994f99db4bdb6d8410552717?placeholderIfAbsent=true"
-                  alt="User Avatar"
-                  className="aspect-[2.28] object-contain w-[60px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] rounded-[80px]"
-                />
-                <button 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white p-2"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="space-y-2">
-                {menuItems.map((item, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleNavigation(item.path)}
-                    className={`flex w-full items-center gap-3 p-3 rounded-[10px] cursor-pointer transition-colors ${
-                      location.pathname === item.path
-                        ? 'bg-[rgba(230,243,255,0.14)] text-white'
-                        : 'text-[rgba(139,139,139,1)] hover:bg-[rgba(255,255,255,0.05)]'
-                    }`}
-                  >
-                    <img
-                      src={item.icon}
-                      alt={item.label}
-                      className="aspect-[1] object-contain w-5 shrink-0"
-                    />
-                    <div>
-                      {item.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </nav>
-        </div>
-      )}
+      <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            className="lg:hidden h-10 w-10 p-0 rounded-md"
+          >
+            <span className="sr-only">Open sidebar</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-menu"
+            >
+              <line x1="4" x2="20" y1="12" y2="12" />
+              <line x1="4" x2="20" y1="6" y2="6" />
+              <line x1="4" x2="20" y1="18" y2="18" />
+            </svg>
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-full sm:w-64 bg-sidebar">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+      <aside className={cn("hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border", className)}>
+        <SidebarContent />
+      </aside>
     </>
   );
 };
